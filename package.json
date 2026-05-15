@@ -1,0 +1,36 @@
+{
+  "name": "spreshapp-mcp",
+  "version": "1.0.1",
+  "description": "MCP server for SpreshApp ad research and competitor intelligence tools",
+  "type": "module",
+  "bin": {
+    "spreshapp-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc && chmod +x dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "mcp",
+    "spreshapp",
+    "ad-research",
+    "facebook-ads",
+    "competitor-intelligence",
+    "claude"
+  ],
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "open": "^10.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}
