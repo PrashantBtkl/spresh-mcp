@@ -91,10 +91,6 @@ rm ~/.spreshapp/credentials.json
 | `ad_analyze_batch` | Analyze multiple ads in one call |
 | `ad_chat` | Chat with Claude about an ad's creative strategy |
 
-<p align="center">
-  <img src="assets/feature-ai-analysis.png" alt="AI ad analysis panel" width="680" />
-</p>
-
 ### Brand tools
 
 | Tool | Description |
@@ -105,10 +101,6 @@ rm ~/.spreshapp/credentials.json
 | `brand_get_ad_history` | Get historical ad volume data for a brand |
 | `brand_list_active_ads` | List all ads a brand is currently running |
 | `brand_follow` | Start tracking a brand |
-
-<p align="center">
-  <img src="assets/feature-track-brands.png" alt="Brand ad history chart" width="480" />
-</p>
 
 ### Library tools
 
