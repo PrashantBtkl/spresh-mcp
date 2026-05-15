@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../ui/static/claudecode.png" width="72" alt="SpreshApp logo" />
+  <img src="assets/logo.png" width="72" alt="SpreshApp logo" />
 </p>
 
 <h1 align="center">spreshapp-mcp</h1>
@@ -17,7 +17,7 @@
 Ask Claude to research competitors, decode winning ad angles, track brand ad history, and analyze your saved ad library, all directly from your Claude Desktop or Claude Code session.
 
 <p align="center">
-  <img src="../ui/static/feature-mcp.png" alt="SpreshApp MCP in Claude Code" width="800" />
+  <img src="assets/feature-mcp.png" alt="SpreshApp MCP in Claude Code" width="800" />
 </p>
 
 ## Requirements
@@ -92,7 +92,7 @@ rm ~/.spreshapp/credentials.json
 | `ad_chat` | Chat with Claude about an ad's creative strategy |
 
 <p align="center">
-  <img src="../ui/static/feature_ai_analysis.png" alt="AI ad analysis panel" width="680" />
+  <img src="assets/feature-ai-analysis.png" alt="AI ad analysis panel" width="680" />
 </p>
 
 ### Brand tools
@@ -107,7 +107,7 @@ rm ~/.spreshapp/credentials.json
 | `brand_follow` | Start tracking a brand |
 
 <p align="center">
-  <img src="../ui/static/feature_track_brands.png" alt="Brand ad history chart" width="480" />
+  <img src="assets/feature-track-brands.png" alt="Brand ad history chart" width="480" />
 </p>
 
 ### Library tools
