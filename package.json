@@ -1,6 +1,6 @@
 {
   "name": "spreshapp-mcp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "MCP server for SpreshApp ad research and competitor intelligence tools",
   "type": "module",
   "bin": {
@@ -19,10 +19,10 @@
   "keywords": [
     "mcp",
     "spreshapp",
-    "ad-research",
     "facebook-ads",
-    "competitor-intelligence",
-    "claude"
+	"ad-spy",
+    "competitor-research",
+    "creative-strategy"
   ],
   "mcpName": "io.github.PrashantBtkl/spresh-mcp",
   "license": "UNLICENSED",
