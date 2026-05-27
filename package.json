@@ -1,6 +1,6 @@
 {
   "name": "spreshapp-mcp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MCP server for SpreshApp ad research and competitor intelligence tools",
   "type": "module",
   "bin": {
