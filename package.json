@@ -24,6 +24,7 @@
     "competitor-intelligence",
     "claude"
   ],
+  "mcpName": "io.github.PrashantBtkl/spresh-mcp",
   "license": "UNLICENSED",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.PrashantBtkl/spresh-mcp",
+  "description": "Connect Claude to SpreshApp's Facebook ad intelligence platform. Search Facebook ads by keyword or brand, analyze ad creative strategy with AI, track competitor brands and their full ad history, and manage your saved ad library.",
+  "repository": {
+    "url": "https://github.com/PrashantBtkl/spresh-mcp",
+    "source": "github"
+  },
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "spreshapp-mcp",
+      "version": "1.0.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
