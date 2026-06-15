@@ -67,14 +67,41 @@ claude mcp add spreshapp -- npx -y spreshapp-mcp
 
 ## Authentication
 
-The first time the server starts it opens your browser to log in with your SpreshApp account (OAuth 2.0 with PKCE). After login, credentials are saved to `~/.spreshapp/credentials.json` (file mode 600) and refreshed automatically before each session.
+Authenticate once before starting the MCP server:
 
-If the browser does not open automatically, copy the URL printed in the terminal and paste it manually.
+```bash
+npx -y spreshapp-mcp login
+```
+
+This opens your browser to log in with your SpreshApp account (OAuth 2.0 with PKCE). After login, credentials are saved to `~/.spreshapp/credentials.json` (file mode 600) and refreshed automatically before each session.
+
+For headless or remote agent environments, use a SpreshApp API key from the dashboard instead of browser OAuth:
+
+```bash
+npx -y spreshapp-mcp login --no-browser
+```
+
+This prints setup instructions for the user and agent. The user can create or copy a key at [spreshapp.com/app/api-access](https://www.spreshapp.com/app/api-access). Keys start with `sk_sprs_`.
+
+Set the key in the MCP server environment:
+
+```bash
+SPRESHAPP_API_KEY=sk_sprs_... npx -y spreshapp-mcp
+```
+
+OAuth token variables are still supported for advanced setups: `SPRESHAPP_ACCESS_TOKEN`, `SPRESHAPP_REFRESH_TOKEN`, `SPRESHAPP_CLIENT_ID`, and `SPRESHAPP_TOKEN_EXPIRES_AT`.
+
+Check auth status:
+
+```bash
+npx -y spreshapp-mcp status
+```
 
 To log in again:
 
 ```bash
-rm ~/.spreshapp/credentials.json
+npx -y spreshapp-mcp logout
+npx -y spreshapp-mcp login
 ```
 
 ## Available Tools

@@ -8,9 +8,14 @@ import { API_BASE_URL, CREDENTIALS_PATH, TOKEN_EXPIRY_BUFFER_MS } from './config
 
 export interface StoredCredentials {
   access_token: string;
-  refresh_token: string;
-  expires_at: number;
-  client_id: string;
+  refresh_token?: string;
+  expires_at?: number;
+  client_id?: string;
+}
+
+export interface OAuthFlowOptions {
+  noBrowser?: boolean;
+  callbackPort?: number;
 }
 
 export function loadCredentials(): StoredCredentials | null {
@@ -19,9 +24,9 @@ export function loadCredentials(): StoredCredentials | null {
     const parsed = JSON.parse(raw) as Partial<StoredCredentials>;
     if (
       typeof parsed.access_token === 'string' &&
-      typeof parsed.refresh_token === 'string' &&
-      typeof parsed.expires_at === 'number' &&
-      typeof parsed.client_id === 'string'
+      (parsed.refresh_token === undefined || typeof parsed.refresh_token === 'string') &&
+      (parsed.expires_at === undefined || typeof parsed.expires_at === 'number') &&
+      (parsed.client_id === undefined || typeof parsed.client_id === 'string')
     ) {
       return parsed as StoredCredentials;
     }
@@ -37,11 +42,50 @@ export function saveCredentials(creds: StoredCredentials): void {
   fs.writeFileSync(CREDENTIALS_PATH, JSON.stringify(creds, null, 2), { mode: 0o600 });
 }
 
+export function deleteCredentials(): boolean {
+  try {
+    fs.unlinkSync(CREDENTIALS_PATH);
+    return true;
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+      return false;
+    }
+    throw err;
+  }
+}
+
+export function loadEnvCredentials(): StoredCredentials | null {
+  const apiKey = process.env.SPRESHAPP_API_KEY;
+  if (apiKey) {
+    return { access_token: apiKey };
+  }
+
+  const accessToken = process.env.SPRESHAPP_ACCESS_TOKEN;
+  if (!accessToken) {
+    return null;
+  }
+
+  const expiresAt = Number(process.env.SPRESHAPP_TOKEN_EXPIRES_AT);
+  return {
+    access_token: accessToken,
+    refresh_token: process.env.SPRESHAPP_REFRESH_TOKEN,
+    expires_at: Number.isFinite(expiresAt) ? expiresAt : undefined,
+    client_id: process.env.SPRESHAPP_CLIENT_ID,
+  };
+}
+
 export function isTokenValid(creds: StoredCredentials): boolean {
+  if (creds.expires_at === undefined) {
+    return true;
+  }
   return creds.expires_at - TOKEN_EXPIRY_BUFFER_MS > Date.now();
 }
 
 export async function refreshAccessToken(creds: StoredCredentials): Promise<StoredCredentials> {
+  if (!creds.refresh_token || !creds.client_id) {
+    throw new Error('Saved credentials cannot be refreshed. Run `spreshapp-mcp login`.');
+  }
+
   const body = new URLSearchParams({
     grant_type: 'refresh_token',
     refresh_token: creds.refresh_token,
@@ -105,8 +149,22 @@ async function findFreePort(): Promise<number> {
   });
 }
 
-export async function runOAuthFlow(): Promise<StoredCredentials> {
-  const port = await findFreePort();
+function assertCallbackPort(port: number): void {
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    throw new Error(`Invalid callback port: ${port}`);
+  }
+}
+
+function hasLocalDisplay(): boolean {
+  if (process.platform !== 'linux') {
+    return true;
+  }
+  return Boolean(process.env.DISPLAY || process.env.WAYLAND_DISPLAY);
+}
+
+export async function runOAuthFlow(options: OAuthFlowOptions = {}): Promise<StoredCredentials> {
+  const port = options.callbackPort ?? (await findFreePort());
+  assertCallbackPort(port);
   const redirectUri = `http://localhost:${port}`;
 
   // 1. Dynamic client registration
@@ -180,15 +238,21 @@ export async function runOAuthFlow(): Promise<StoredCredentials> {
     callbackServer.on('error', reject);
   });
 
-  // 5. Open browser
-  process.stderr.write(`\nOpening browser to log in with your SpreshApp account...\n`);
-  process.stderr.write(`If the browser does not open, visit:\n${authorizeURL}\n\n`);
-
-  try {
-    await open(authorizeURL);
-  } catch {
-    // Browser open failed -- user can manually visit the URL
+  // 5. Open browser, unless the caller is setting up a headless host.
+  if (options.noBrowser) {
+    process.stderr.write('\nBrowser auto-open disabled.\n');
+  } else if (!hasLocalDisplay()) {
+    process.stderr.write('\nNo local display detected; skipping browser auto-open.\n');
+  } else {
+    process.stderr.write(`\nOpening browser to log in with your SpreshApp account...\n`);
+    try {
+      await open(authorizeURL);
+    } catch {
+      process.stderr.write('Browser auto-open failed.\n');
+    }
   }
+  process.stderr.write(`Visit this URL to log in:\n${authorizeURL}\n\n`);
+  process.stderr.write(`Waiting for OAuth callback on ${redirectUri} ...\n`);
 
   // 6. Wait for callback
   let authCode: string;
@@ -237,13 +301,17 @@ export async function runOAuthFlow(): Promise<StoredCredentials> {
 }
 
 export async function getOrAuthenticateToken(): Promise<StoredCredentials> {
-  const stored = loadCredentials();
+  const envCredentials = loadEnvCredentials();
+  if (envCredentials && isTokenValid(envCredentials)) {
+    return envCredentials;
+  }
 
+  const stored = loadCredentials();
   if (stored && isTokenValid(stored)) {
     return stored;
   }
 
-  if (stored) {
+  if (stored && stored.refresh_token && stored.client_id) {
     process.stderr.write('Access token expired, refreshing...\n');
     try {
       return await refreshAccessToken(stored);
@@ -253,4 +321,30 @@ export async function getOrAuthenticateToken(): Promise<StoredCredentials> {
   }
 
   return runOAuthFlow();
+}
+
+export async function getTokenForServer(): Promise<StoredCredentials> {
+  const envCredentials = loadEnvCredentials();
+  if (envCredentials && isTokenValid(envCredentials)) {
+    return envCredentials;
+  }
+
+  const stored = loadCredentials();
+  if (stored && isTokenValid(stored)) {
+    return stored;
+  }
+
+  if (stored && stored.refresh_token && stored.client_id) {
+    process.stderr.write('Access token expired, refreshing...\n');
+    return refreshAccessToken(stored);
+  }
+
+  throw new Error(
+    [
+      'SpreshApp MCP is not authenticated.',
+      'Run `spreshapp-mcp login` on this machine before starting the MCP server.',
+      'For headless setup, create an API key at https://www.spreshapp.com/app/api-access and set SPRESHAPP_API_KEY.',
+      'OAuth tokens are still supported with SPRESHAPP_ACCESS_TOKEN and optional SPRESHAPP_REFRESH_TOKEN.',
+    ].join('\n'),
+  );
 }
