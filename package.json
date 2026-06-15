@@ -1,6 +1,6 @@
 {
   "name": "spreshapp-mcp",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "MCP server for SpreshApp ad research and competitor intelligence tools",
   "type": "module",
   "bin": {
@@ -20,7 +20,7 @@
     "mcp",
     "spreshapp",
     "facebook-ads",
-	"ad-spy",
+    "ad-spy",
     "competitor-research",
     "creative-strategy"
   ],
