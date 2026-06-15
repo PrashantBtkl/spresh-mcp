@@ -4,7 +4,7 @@
   "description": "MCP server for SpreshApp ad research and competitor intelligence tools",
   "type": "module",
   "bin": {
-    "spreshapp-mcp": "./dist/index.js"
+    "spreshapp-mcp": "dist/index.js"
   },
   "files": [
     "dist/"
