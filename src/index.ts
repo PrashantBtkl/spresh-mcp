@@ -43,7 +43,7 @@ function humanizeError(raw: string): string {
       return 'This feature is not available on your current plan. Visit https://spreshapp.com/pricing to upgrade.';
     }
     if (e.error === 'auth_required') {
-      return 'Authentication required. Run `spreshapp-mcp login`, or set SPRESHAPP_API_KEY from https://www.spreshapp.com/app/api-access.';
+      return 'Authentication required. Run `spreshapp-mcp login`, or set SPRESHAPP_API_KEY from https://spreshapp.com/app/api-access.';
     }
   } catch {
     // not JSON, return as-is
@@ -117,7 +117,7 @@ function printHeadlessLoginInstructions(): void {
 For agent or remote server environments, use a SpreshApp API key instead of browser OAuth.
 
 User steps:
-  1. Open https://www.spreshapp.com/app/api-access
+  1. Open https://spreshapp.com/app/api-access
   2. Create or copy an API key. It starts with sk_sprs_.
   3. Give the key to the agent or add it to the MCP server environment as SPRESHAPP_API_KEY.
 

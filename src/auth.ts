@@ -343,7 +343,7 @@ export async function getTokenForServer(): Promise<StoredCredentials> {
     [
       'SpreshApp MCP is not authenticated.',
       'Run `spreshapp-mcp login` on this machine before starting the MCP server.',
-      'For headless setup, create an API key at https://www.spreshapp.com/app/api-access and set SPRESHAPP_API_KEY.',
+      'For headless setup, create an API key at https://spreshapp.com/app/api-access and set SPRESHAPP_API_KEY.',
       'OAuth tokens are still supported with SPRESHAPP_ACCESS_TOKEN and optional SPRESHAPP_REFRESH_TOKEN.',
     ].join('\n'),
   );

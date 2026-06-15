@@ -81,7 +81,7 @@ For headless or remote agent environments, use a SpreshApp API key from the dash
 npx -y spreshapp-mcp login --no-browser
 ```
 
-This prints setup instructions for the user and agent. The user can create or copy a key at [spreshapp.com/app/api-access](https://www.spreshapp.com/app/api-access). Keys start with `sk_sprs_`.
+This prints setup instructions for the user and agent. The user can create or copy a key at [spreshapp.com/app/api-access](https://spreshapp.com/app/api-access). Keys start with `sk_sprs_`.
 
 Set the key in the MCP server environment:
 
